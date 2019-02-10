@@ -1,9 +1,7 @@
 const MongooseAdapter = ({ Model, ObjectId }) => {
   const findOne = id => Model.findById(id);
 
-  const find = () => {
-    // TODO: implement this
-  };
+  const find = query => Model.find(query);
 
   const create = model => Model.create(model);
 

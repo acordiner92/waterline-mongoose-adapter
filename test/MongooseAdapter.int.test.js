@@ -1,9 +1,15 @@
 const { expect } = require('chai');
-const { User } = require('../models');
+const { User, Book, Story } = require('../models');
 const mongoose = require('../mongoose');
 const MongooseAdapter = require('../MongooseAdapter');
 
 describe('MongooseAdapter', () => {
+  beforeEach(async () => {
+    await User.deleteMany();
+    await Book.deleteMany();
+    await Story.deleteMany();
+  });
+
   describe('findOne', () => {
     it('Check that document is returned', async () => {
       const mongooseAdapter = MongooseAdapter({
@@ -29,6 +35,56 @@ describe('MongooseAdapter', () => {
 
       const match = await mongooseAdapter.findOne('56aa94de044befe2e79f5b5d');
       expect(match).to.equal(null);
+    });
+  });
+
+  describe('find', () => {
+    it('check a basic find query works', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        Model: User,
+        ObjectId: mongoose.Types.ObjectId
+      });
+
+      await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+
+      const results = await mongooseAdapter.find({ firstName: 'harry' });
+      expect(results.length).to.equal(1);
+    });
+
+    it('check a basic populate works', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        Model: Book,
+        ObjectId: mongoose.Types.ObjectId
+      });
+
+      const user = await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+
+      const story = await Story.create({
+        title: 'the boy who lived'
+      });
+
+      await Book.create({
+        author: user.id,
+        story: story.id
+      });
+
+      const fullBooks = await mongooseAdapter
+        .find()
+        .populate('author')
+        .populate('story');
+
+      const [fullBook] = fullBooks;
+
+      expect(fullBook.author.id).to.equal(user.id);
+      expect(fullBook.story.id).to.equal(story.id);
     });
   });
 
