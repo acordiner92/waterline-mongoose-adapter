@@ -13,7 +13,7 @@ const MongooseAdapter = ({ Model, ObjectId }) => {
     return [updatedModel];
   };
 
-  const destroy = id => Model.findOneAndRemove(id);
+  const destroy = id => Model.findOneAndDelete({ _id: ObjectId(id) });
 
   return {
     findOne,
