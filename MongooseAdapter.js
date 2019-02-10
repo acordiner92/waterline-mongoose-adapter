@@ -13,12 +13,17 @@ const MongooseAdapter = ({ Model, ObjectId }) => {
 
   const destroy = id => Model.findOneAndDelete({ _id: ObjectId(id) });
 
+  const native = cb => {
+    cb(null, Model.collection);
+  };
+
   return {
     findOne,
     find,
     create,
     update,
-    destroy
+    destroy,
+    native
   };
 };
 module.exports = MongooseAdapter;

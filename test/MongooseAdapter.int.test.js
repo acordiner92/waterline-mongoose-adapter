@@ -148,4 +148,28 @@ describe('MongooseAdapter', () => {
       expect(result).to.equal(null);
     });
   });
+
+  describe('native', () => {
+    it('check the models mongo collection is returned', done => {
+      const mongooseAdapter = MongooseAdapter({
+        Model: User,
+        ObjectId: mongoose.Types.ObjectId
+      });
+
+      User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      })
+        .then(() => {
+          mongooseAdapter.native((err, collection) => {
+            collection.find({}).toArray((error, users) => {
+              expect(users.length).to.equal(1);
+              done();
+            });
+          });
+        })
+        .catch(done);
+    });
+  });
 });
