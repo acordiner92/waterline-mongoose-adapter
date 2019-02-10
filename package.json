@@ -1,0 +1,19 @@
+{
+  "name": "waterline-mongoose-adapter",
+  "version": "0.1.0",
+  "description": "Mongoose Adapter for Waterline",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acac99/waterline-mongoose-adapter.git"
+  },
+  "author": "Andrew",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/acac99/waterline-mongoose-adapter/issues"
+  },
+  "homepage": "https://github.com/acac99/waterline-mongoose-adapter#readme"
+}
