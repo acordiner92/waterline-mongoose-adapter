@@ -1,4 +1,4 @@
-const MongooseAdapter = ({ Model, ObjectId, findQueryBuilder }) => {
+const MongooseAdapter = ({ ObjectId, findQueryBuilder }) => ({ Model }) => {
   const findOne = id => Model.findById(id);
 
   const getSort = sortValue => {

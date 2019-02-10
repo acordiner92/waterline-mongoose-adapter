@@ -14,9 +14,8 @@ describe('MongooseAdapter', () => {
   describe('findOne', () => {
     it('Check that document is returned', async () => {
       const mongooseAdapter = MongooseAdapter({
-        Model: User,
         ObjectId: mongoose.Types.ObjectId
-      });
+      })({ Model: User });
 
       const result = await User.create({
         firstName: 'harry',
@@ -30,9 +29,8 @@ describe('MongooseAdapter', () => {
 
     it('Check if no document is found, then null is returned', async () => {
       const mongooseAdapter = MongooseAdapter({
-        Model: User,
         ObjectId: mongoose.Types.ObjectId
-      });
+      })({ Model: User });
 
       const match = await mongooseAdapter.findOne('56aa94de044befe2e79f5b5d');
       expect(match).to.equal(null);
@@ -44,10 +42,9 @@ describe('MongooseAdapter', () => {
 
     it('check a basic find query works', async () => {
       const mongooseAdapter = MongooseAdapter({
-        Model: User,
         ObjectId: mongoose.Types.ObjectId,
         findQueryBuilder
-      });
+      })({ Model: User });
 
       await User.create({
         firstName: 'harry',
@@ -62,9 +59,8 @@ describe('MongooseAdapter', () => {
     it('check a basic populate works', async () => {
       const mongooseAdapter = MongooseAdapter({
         findQueryBuilder,
-        Model: Book,
         ObjectId: mongoose.Types.ObjectId
-      });
+      })({ Model: Book });
 
       const user = await User.create({
         firstName: 'harry',
@@ -94,10 +90,9 @@ describe('MongooseAdapter', () => {
 
     it('check limiting works', async () => {
       const mongooseAdapter = MongooseAdapter({
-        Model: User,
         ObjectId: mongoose.Types.ObjectId,
         findQueryBuilder
-      });
+      })({ Model: User });
 
       await User.create({
         firstName: 'harry',
@@ -118,10 +113,9 @@ describe('MongooseAdapter', () => {
 
     it('check skip works', async () => {
       const mongooseAdapter = MongooseAdapter({
-        Model: User,
         ObjectId: mongoose.Types.ObjectId,
         findQueryBuilder
-      });
+      })({ Model: User });
 
       await User.create({
         firstName: 'harry',
@@ -144,10 +138,9 @@ describe('MongooseAdapter', () => {
 
     it('check sort works', async () => {
       const mongooseAdapter = MongooseAdapter({
-        Model: User,
         ObjectId: mongoose.Types.ObjectId,
         findQueryBuilder
-      });
+      })({ Model: User });
 
       await User.create({
         firstName: 'harry',
@@ -171,9 +164,8 @@ describe('MongooseAdapter', () => {
   describe('create', () => {
     it('check a model document is created successfully', async () => {
       const mongooseAdapter = MongooseAdapter({
-        Model: User,
         ObjectId: mongoose.Types.ObjectId
-      });
+      })({ Model: User });
 
       const result = await mongooseAdapter.create({
         firstName: 'harry',
@@ -190,9 +182,8 @@ describe('MongooseAdapter', () => {
   describe('update', () => {
     it('check a model document is updated successfully', async () => {
       const mongooseAdapter = MongooseAdapter({
-        Model: User,
         ObjectId: mongoose.Types.ObjectId
-      });
+      })({ Model: User });
 
       const result = await User.create({
         firstName: 'harry',
@@ -212,9 +203,8 @@ describe('MongooseAdapter', () => {
   describe('destroy', () => {
     it('check model document is deleted', async () => {
       const mongooseAdapter = MongooseAdapter({
-        Model: User,
         ObjectId: mongoose.Types.ObjectId
-      });
+      })({ Model: User });
 
       const createdUser = await User.create({
         firstName: 'harry',
@@ -232,9 +222,8 @@ describe('MongooseAdapter', () => {
   describe('native', () => {
     it('check the models mongo collection is returned', done => {
       const mongooseAdapter = MongooseAdapter({
-        Model: User,
         ObjectId: mongoose.Types.ObjectId
-      });
+      })({ Model: User });
 
       User.create({
         firstName: 'harry',
