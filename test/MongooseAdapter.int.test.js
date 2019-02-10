@@ -2,6 +2,7 @@ const { expect } = require('chai');
 const { User, Book, Story } = require('../models');
 const mongoose = require('../mongoose');
 const MongooseAdapter = require('../MongooseAdapter');
+const FindQueryBuilder = require('../FindQueryBuilder');
 
 describe('MongooseAdapter', () => {
   beforeEach(async () => {
@@ -39,10 +40,13 @@ describe('MongooseAdapter', () => {
   });
 
   describe('find', () => {
+    const findQueryBuilder = FindQueryBuilder();
+
     it('check a basic find query works', async () => {
       const mongooseAdapter = MongooseAdapter({
         Model: User,
-        ObjectId: mongoose.Types.ObjectId
+        ObjectId: mongoose.Types.ObjectId,
+        findQueryBuilder
       });
 
       await User.create({
@@ -57,6 +61,7 @@ describe('MongooseAdapter', () => {
 
     it('check a basic populate works', async () => {
       const mongooseAdapter = MongooseAdapter({
+        findQueryBuilder,
         Model: Book,
         ObjectId: mongoose.Types.ObjectId
       });
@@ -85,6 +90,81 @@ describe('MongooseAdapter', () => {
 
       expect(fullBook.author.id).to.equal(user.id);
       expect(fullBook.story.id).to.equal(story.id);
+    });
+
+    it('check limiting works', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        Model: User,
+        ObjectId: mongoose.Types.ObjectId,
+        findQueryBuilder
+      });
+
+      await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+      await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+
+      const results = await mongooseAdapter.find({
+        limit: 1
+      });
+      expect(results.length).to.equal(1);
+    });
+
+    it('check skip works', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        Model: User,
+        ObjectId: mongoose.Types.ObjectId,
+        findQueryBuilder
+      });
+
+      await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+      await User.create({
+        firstName: 'hagrid',
+        lastName: 'voldi',
+        age: 20
+      });
+
+      const results = await mongooseAdapter.find({
+        skip: 1
+      });
+      const [result] = results;
+      expect(results.length).to.equal(1);
+      expect(result.firstName).to.equal('hagrid');
+    });
+
+    it('check sort works', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        Model: User,
+        ObjectId: mongoose.Types.ObjectId,
+        findQueryBuilder
+      });
+
+      await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+      await User.create({
+        firstName: 'hagrid',
+        lastName: 'voldi',
+        age: 20
+      });
+
+      const results = await mongooseAdapter.find({
+        sort: 'firstName DESC'
+      });
+      const [result] = results;
+      expect(result.firstName).to.equal('hagrid');
     });
   });
 

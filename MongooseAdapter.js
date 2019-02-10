@@ -1,7 +1,23 @@
-const MongooseAdapter = ({ Model, ObjectId }) => {
+const MongooseAdapter = ({ Model, ObjectId, findQueryBuilder }) => {
   const findOne = id => Model.findById(id);
 
-  const find = query => Model.find(query);
+  const getSort = sortValue => {
+    const [field, order] = sortValue.split(' ');
+    const sort = {};
+    sort[field] = order === 'ASC' ? -1 : 1;
+    return sort;
+  };
+
+  const find = (query = {}) => {
+    const { limit, skip, sort, ...restOfQuery } = query;
+    const mongooseQuery = findQueryBuilder.buildQuery(restOfQuery);
+    return Model.find(mongooseQuery)
+      .skip(skip)
+      .limit(limit)
+      .sort({
+        ...(sort ? getSort(sort) : { _id: 1 })
+      });
+  };
 
   const create = model => Model.create(model);
 
