@@ -4,7 +4,8 @@
   "description": "Mongoose Adapter for Waterline",
   "main": "index.js",
   "scripts": {
-    "code-check": "eslint ./ && prettier --write"
+    "code-check": "eslint ./ && prettier --write",
+    "test": "mocha"
   },
   "husky": {
     "hooks": {
