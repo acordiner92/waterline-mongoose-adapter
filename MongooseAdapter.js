@@ -33,13 +33,16 @@ const MongooseAdapter = ({ ObjectId, findQueryBuilder }) => ({ Model }) => {
     cb(null, Model.collection);
   };
 
+  const count = (query = {}) => Model.countDocuments(query);
+
   return {
     findOne,
     find,
     create,
     update,
     destroy,
-    native
+    native,
+    count
   };
 };
 module.exports = MongooseAdapter;

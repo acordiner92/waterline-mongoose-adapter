@@ -241,4 +241,44 @@ describe('MongooseAdapter', () => {
         .catch(done);
     });
   });
+
+  describe('count', async () => {
+    it('check count of model works with no query param', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        ObjectId: mongoose.Types.ObjectId
+      })({ Model: User });
+
+      await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+
+      const count = await mongooseAdapter.count();
+
+      expect(count).to.equal(1);
+    });
+
+    it('check count of model works with query param', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        ObjectId: mongoose.Types.ObjectId
+      })({ Model: User });
+
+      await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+
+      await User.create({
+        firstName: 'voldemort',
+        lastName: 'potter',
+        age: 20
+      });
+
+      const count = await mongooseAdapter.count({ firstName: 'voldemort' });
+
+      expect(count).to.equal(1);
+    });
+  });
 });
