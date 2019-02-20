@@ -37,7 +37,8 @@ const FindQueryBuilder = () => {
       '<=': '$lte',
       '>': '$gt',
       '>=': '$gte',
-      '!=': '$ne'
+      '!=': '$ne',
+      '!': '$ne'
     };
     return Object.entries(query).reduce((prev, [key, value]) => {
       const updateQuery = {

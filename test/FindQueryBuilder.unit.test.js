@@ -136,5 +136,15 @@ describe('FindQueryBuilder', () => {
         age: { $ne: 7 }
       });
     });
+
+    it('if a value with ! is present it is converted to $ne', () => {
+      const findQueryBuilder = FindQueryBuilder();
+      const query = findQueryBuilder.buildQuery({
+        age: { '!': 7 }
+      });
+      expect(query).to.eql({
+        age: { $ne: 7 }
+      });
+    });
   });
 });

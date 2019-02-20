@@ -243,8 +243,10 @@ describe('MongooseAdapter', () => {
   });
 
   describe('count', async () => {
+    const findQueryBuilder = FindQueryBuilder();
     it('check count of model works with no query param', async () => {
       const mongooseAdapter = MongooseAdapter({
+        findQueryBuilder,
         ObjectId: mongoose.Types.ObjectId
       })({ Model: User });
 
@@ -261,6 +263,7 @@ describe('MongooseAdapter', () => {
 
     it('check count of model works with query param', async () => {
       const mongooseAdapter = MongooseAdapter({
+        findQueryBuilder,
         ObjectId: mongoose.Types.ObjectId
       })({ Model: User });
 
