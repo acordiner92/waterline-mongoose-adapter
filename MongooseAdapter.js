@@ -21,10 +21,20 @@ const MongooseAdapter = ({ ObjectId, findQueryBuilder }) => ({ Model }) => {
 
   const create = model => Model.create(model);
 
-  const update = async (id, model) => {
-    await Model.updateOne({ _id: ObjectId(id) }, model);
-    const updatedModel = await Model.findById(id);
-    return [updatedModel];
+  const update = async (queryOrId, model) => {
+    const matches =
+      typeof queryOrId === 'string'
+        ? [await findOne(queryOrId)]
+        : await Model.find(findQueryBuilder.buildQuery(queryOrId));
+
+    const results = await Promise.all(
+      matches.map(async x => {
+        await Model.updateOne({ _id: ObjectId(x.id) }, model);
+        return findOne(x.id);
+      })
+    );
+
+    return results;
   };
 
   const destroy = queryOrId =>

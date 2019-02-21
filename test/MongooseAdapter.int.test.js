@@ -180,8 +180,10 @@ describe('MongooseAdapter', () => {
   });
 
   describe('update', () => {
+    const findQueryBuilder = FindQueryBuilder();
     it('check a model document is updated successfully', async () => {
       const mongooseAdapter = MongooseAdapter({
+        findQueryBuilder,
         ObjectId: mongoose.Types.ObjectId
       })({ Model: User });
 
@@ -194,6 +196,29 @@ describe('MongooseAdapter', () => {
       const updatedResults = await mongooseAdapter.update(result.id, {
         firstName: 'ron'
       });
+
+      const [updatedResult] = updatedResults;
+      expect(updatedResult.firstName).to.equal('ron');
+    });
+
+    it('check a model document is updated successfully via query', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        findQueryBuilder,
+        ObjectId: mongoose.Types.ObjectId
+      })({ Model: User });
+
+      await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+
+      const updatedResults = await mongooseAdapter.update(
+        { firstName: 'harry' },
+        {
+          firstName: 'ron'
+        }
+      );
 
       const [updatedResult] = updatedResults;
       expect(updatedResult.firstName).to.equal('ron');
