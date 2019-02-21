@@ -1,6 +1,6 @@
 {
   "name": "waterline-mongoose-adapter",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Mongoose Adapter for Waterline",
   "main": "index.js",
   "scripts": {
