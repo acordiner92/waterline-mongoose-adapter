@@ -45,6 +45,76 @@ describe('FindQueryBuilder', () => {
       });
     });
 
+    it('check nested modifiers are converted correctly', () => {
+      const findQueryBuilder = FindQueryBuilder();
+      const from = new Date();
+      const to = new Date();
+      const query = findQueryBuilder.buildQuery({
+        or: [
+          {
+            swId: 'yyy',
+            from: {
+              '>=': from,
+              '<': to
+            }
+          },
+          {
+            swId: 'yyy',
+            to: {
+              '<=': to,
+              '>': from
+            }
+          },
+          {
+            clientId: 'xxx',
+            from: {
+              '>=': from,
+              '<': to
+            }
+          },
+          {
+            clientId: 'xxx',
+            to: {
+              '<=': to,
+              '>': from
+            }
+          }
+        ]
+      });
+      expect(query).to.eql({
+        $or: [
+          {
+            swId: 'yyy',
+            from: {
+              $gte: from,
+              $lt: to
+            }
+          },
+          {
+            swId: 'yyy',
+            to: {
+              $lte: to,
+              $gt: from
+            }
+          },
+          {
+            clientId: 'xxx',
+            from: {
+              $gte: from,
+              $lt: to
+            }
+          },
+          {
+            clientId: 'xxx',
+            to: {
+              $lte: to,
+              $gt: from
+            }
+          }
+        ]
+      });
+    });
+
     it('if an array value with ! is present it is converted to $nin', () => {
       const findQueryBuilder = FindQueryBuilder();
       const query = findQueryBuilder.buildQuery({

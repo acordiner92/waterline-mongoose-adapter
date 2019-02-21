@@ -1,4 +1,10 @@
 const FindQueryBuilder = () => {
+  const isOnlyObject = obj =>
+    typeof obj === 'object' && !(obj instanceof Date) && !Array.isArray(obj);
+
+  const isArrayObjects = obj =>
+    Array.isArray(obj) && obj.length > 0 && isOnlyObject(obj[0]);
+
   const inModifier = query => {
     return Object.entries(query).reduce((prev, [key, value]) => {
       const updateQuery = {
@@ -6,11 +12,7 @@ const FindQueryBuilder = () => {
       };
       if (key !== '!' && Array.isArray(value) && key !== '$or') {
         updateQuery[key] = { $in: value };
-      } else if (
-        typeof value === 'object' &&
-        !(value instanceof Date) &&
-        !Array.isArray(value)
-      ) {
+      } else if (isOnlyObject(value)) {
         updateQuery[key] = inModifier(value);
       } else {
         updateQuery[key] = value;
@@ -26,11 +28,7 @@ const FindQueryBuilder = () => {
       };
       if (key === '!' && Array.isArray(value)) {
         updateQuery = { $nin: value };
-      } else if (
-        typeof value === 'object' &&
-        !(value instanceof Date) &&
-        !Array.isArray(value)
-      ) {
+      } else if (isOnlyObject(value)) {
         updateQuery[key] = notInModifier(value);
       } else {
         updateQuery[key] = value;
@@ -54,12 +52,11 @@ const FindQueryBuilder = () => {
       };
       if (criterias[key]) {
         updateQuery[criterias[key]] = value;
-      } else if (
-        typeof value === 'object' &&
-        !(value instanceof Date) &&
-        !Array.isArray(value)
-      ) {
+      } else if (isOnlyObject(value)) {
         updateQuery[key] = criteriaModifiers(value);
+      } else if (isArrayObjects(value)) {
+        const res = value.map(x => criteriaModifiers(x));
+        updateQuery[key] = res;
       } else {
         updateQuery[key] = value;
       }
