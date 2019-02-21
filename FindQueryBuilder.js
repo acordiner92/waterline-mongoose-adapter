@@ -65,8 +65,9 @@ const FindQueryBuilder = () => {
   };
 
   const buildQuery = waterlineQuery => {
-    const { where, or, ...otherFields } = waterlineQuery;
+    const { id, where, or, ...otherFields } = waterlineQuery;
     let query = {
+      ...(id && { _id: id }),
       ...(where && { ...where }),
       ...(or && { $or: or }),
       ...otherFields

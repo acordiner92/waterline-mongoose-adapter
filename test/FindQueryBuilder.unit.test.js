@@ -19,6 +19,12 @@ describe('FindQueryBuilder', () => {
       expect(query).to.eql({});
     });
 
+    it('if id is present then _id is added', () => {
+      const findQueryBuilder = FindQueryBuilder();
+      const query = findQueryBuilder.buildQuery({ id: { '!': 'xxx' } });
+      expect(query).to.eql({ _id: { $ne: 'xxx' } });
+    });
+
     it('if an array value is present it is converted to $in', () => {
       const findQueryBuilder = FindQueryBuilder();
       const query = findQueryBuilder.buildQuery({
