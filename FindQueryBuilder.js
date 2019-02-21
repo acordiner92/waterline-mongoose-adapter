@@ -14,6 +14,9 @@ const FindQueryBuilder = () => {
         updateQuery[key] = { $in: value };
       } else if (isOnlyObject(value)) {
         updateQuery[key] = inModifier(value);
+      } else if (isArrayObjects(value)) {
+        const res = value.map(x => inModifier(x));
+        updateQuery[key] = res;
       } else {
         updateQuery[key] = value;
       }
@@ -30,6 +33,9 @@ const FindQueryBuilder = () => {
         updateQuery = { $nin: value };
       } else if (isOnlyObject(value)) {
         updateQuery[key] = notInModifier(value);
+      } else if (isArrayObjects(value)) {
+        const res = value.map(x => notInModifier(x));
+        updateQuery[key] = res;
       } else {
         updateQuery[key] = value;
       }

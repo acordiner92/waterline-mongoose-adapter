@@ -51,6 +51,46 @@ describe('FindQueryBuilder', () => {
       });
     });
 
+    it('if nested arrays objects value is an array, it is converted to $nin', () => {
+      const findQueryBuilder = FindQueryBuilder();
+      const query = findQueryBuilder.buildQuery({
+        firstName: 'harry',
+        or: [
+          {
+            colours: ['blue', 'green', 'yellow']
+          }
+        ]
+      });
+      expect(query).to.eql({
+        firstName: 'harry',
+        $or: [
+          {
+            colours: { $in: ['blue', 'green', 'yellow'] }
+          }
+        ]
+      });
+    });
+
+    it('if nested arrays objects value ! is present it is converted to $nin', () => {
+      const findQueryBuilder = FindQueryBuilder();
+      const query = findQueryBuilder.buildQuery({
+        firstName: 'harry',
+        or: [
+          {
+            colours: { '!': ['blue', 'green', 'yellow'] }
+          }
+        ]
+      });
+      expect(query).to.eql({
+        firstName: 'harry',
+        $or: [
+          {
+            colours: { $nin: ['blue', 'green', 'yellow'] }
+          }
+        ]
+      });
+    });
+
     it('check nested modifiers are converted correctly', () => {
       const findQueryBuilder = FindQueryBuilder();
       const from = new Date();
