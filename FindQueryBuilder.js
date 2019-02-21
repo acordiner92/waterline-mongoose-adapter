@@ -1,6 +1,9 @@
 const FindQueryBuilder = () => {
   const isOnlyObject = obj =>
-    typeof obj === 'object' && !(obj instanceof Date) && !Array.isArray(obj);
+    typeof obj === 'object' &&
+    !(obj instanceof Date) &&
+    !Array.isArray(obj) &&
+    obj !== null;
 
   const isArrayObjects = obj =>
     Array.isArray(obj) && obj.length > 0 && isOnlyObject(obj[0]);

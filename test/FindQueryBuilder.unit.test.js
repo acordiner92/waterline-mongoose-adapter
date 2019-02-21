@@ -19,6 +19,14 @@ describe('FindQueryBuilder', () => {
       expect(query).to.eql({});
     });
 
+    it('make sure null case is handled', () => {
+      const findQueryBuilder = FindQueryBuilder();
+      const query = findQueryBuilder.buildQuery({
+        expired: null
+      });
+      expect(query).to.eql({ expired: null });
+    });
+
     it('if id is present then _id is added', () => {
       const findQueryBuilder = FindQueryBuilder();
       const query = findQueryBuilder.buildQuery({ id: { '!': 'xxx' } });
