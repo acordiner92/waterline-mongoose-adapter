@@ -117,6 +117,18 @@ describe('FindQueryBuilder', () => {
       });
     });
 
+    it('if a value with > and < is present it is converted to $gt and $le', () => {
+      const findQueryBuilder = FindQueryBuilder();
+      const dateOne = new Date();
+      const dateTwo = new Date();
+      const query = findQueryBuilder.buildQuery({
+        age: { '>': dateOne, '<': dateTwo }
+      });
+      expect(query).to.eql({
+        age: { $gt: dateOne, $lt: dateTwo }
+      });
+    });
+
     it('if a value with < is present it is converted to $lt', () => {
       const findQueryBuilder = FindQueryBuilder();
       const query = findQueryBuilder.buildQuery({

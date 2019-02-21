@@ -6,7 +6,11 @@ const FindQueryBuilder = () => {
       };
       if (key !== '!' && Array.isArray(value) && key !== '$or') {
         updateQuery[key] = { $in: value };
-      } else if (typeof value === 'object' && !Array.isArray(value)) {
+      } else if (
+        typeof value === 'object' &&
+        !(value instanceof Date) &&
+        !Array.isArray(value)
+      ) {
         updateQuery[key] = inModifier(value);
       } else {
         updateQuery[key] = value;
@@ -22,7 +26,11 @@ const FindQueryBuilder = () => {
       };
       if (key === '!' && Array.isArray(value)) {
         updateQuery = { $nin: value };
-      } else if (typeof value === 'object' && !Array.isArray(value)) {
+      } else if (
+        typeof value === 'object' &&
+        !(value instanceof Date) &&
+        !Array.isArray(value)
+      ) {
         updateQuery[key] = notInModifier(value);
       } else {
         updateQuery[key] = value;
@@ -46,7 +54,11 @@ const FindQueryBuilder = () => {
       };
       if (criterias[key]) {
         updateQuery[criterias[key]] = value;
-      } else if (typeof value === 'object' && !Array.isArray(value)) {
+      } else if (
+        typeof value === 'object' &&
+        !(value instanceof Date) &&
+        !Array.isArray(value)
+      ) {
         updateQuery[key] = criteriaModifiers(value);
       } else {
         updateQuery[key] = value;
