@@ -201,8 +201,10 @@ describe('MongooseAdapter', () => {
   });
 
   describe('destroy', () => {
+    const findQueryBuilder = FindQueryBuilder();
     it('check model document is deleted', async () => {
       const mongooseAdapter = MongooseAdapter({
+        findQueryBuilder,
         ObjectId: mongoose.Types.ObjectId
       })({ Model: User });
 
@@ -216,6 +218,30 @@ describe('MongooseAdapter', () => {
 
       const result = await User.findById(createdUser.id);
       expect(result).to.equal(null);
+    });
+
+    it('check model document is deleted via query', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        findQueryBuilder,
+        ObjectId: mongoose.Types.ObjectId
+      })({ Model: User });
+
+      await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+
+      await User.create({
+        firstName: 'voldemort',
+        lastName: 'potter',
+        age: 20
+      });
+
+      await mongooseAdapter.destroy({ firstName: 'voldemort' });
+
+      const count = await User.countDocuments();
+      expect(count).to.equal(1);
     });
   });
 

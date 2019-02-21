@@ -27,7 +27,12 @@ const MongooseAdapter = ({ ObjectId, findQueryBuilder }) => ({ Model }) => {
     return [updatedModel];
   };
 
-  const destroy = id => Model.findOneAndDelete({ _id: ObjectId(id) });
+  const destroy = queryOrId =>
+    Model.deleteMany({
+      ...(typeof queryOrId === 'string' && { _id: ObjectId(queryOrId) }),
+      ...(typeof queryOrId !== 'string' &&
+        findQueryBuilder.buildQuery(queryOrId))
+    });
 
   const native = cb => {
     cb(null, Model.collection);
