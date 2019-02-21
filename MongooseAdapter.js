@@ -1,10 +1,17 @@
 const MongooseAdapter = ({ ObjectId, findQueryBuilder }) => ({ Model }) => {
-  const findOne = id => Model.findById(id);
+  const findOne = async queryOrId => {
+    const model = await Model.find({
+      ...(typeof queryOrId === 'string' && { _id: ObjectId(queryOrId) }),
+      ...(typeof queryOrId !== 'string' &&
+        findQueryBuilder.buildQuery(queryOrId))
+    });
+    return model.length > 0 ? model[0] : undefined;
+  };
 
   const getSort = sortValue => {
     const [field, order] = sortValue.split(' ');
     const sort = {};
-    sort[field] = order === 'ASC' ? -1 : 1;
+    sort[field] = order === 'ASC' ? 1 : -1;
     return sort;
   };
 

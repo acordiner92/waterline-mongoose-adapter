@@ -12,6 +12,8 @@ describe('MongooseAdapter', () => {
   });
 
   describe('findOne', () => {
+    const findQueryBuilder = FindQueryBuilder();
+
     it('Check that document is returned', async () => {
       const mongooseAdapter = MongooseAdapter({
         ObjectId: mongoose.Types.ObjectId
@@ -27,13 +29,29 @@ describe('MongooseAdapter', () => {
       expect(match.id).to.equal(result.id);
     });
 
-    it('Check if no document is found, then null is returned', async () => {
+    it('Check that document is returned on query', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        findQueryBuilder,
+        ObjectId: mongoose.Types.ObjectId
+      })({ Model: User });
+
+      const result = await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+
+      const match = await mongooseAdapter.findOne({ firstName: 'harry' });
+      expect(match.id).to.equal(result.id);
+    });
+
+    it('Check if no document is found, then undefined is returned', async () => {
       const mongooseAdapter = MongooseAdapter({
         ObjectId: mongoose.Types.ObjectId
       })({ Model: User });
 
       const match = await mongooseAdapter.findOne('56aa94de044befe2e79f5b5d');
-      expect(match).to.equal(null);
+      expect(match).to.equal(undefined);
     });
   });
 
@@ -154,7 +172,7 @@ describe('MongooseAdapter', () => {
       });
 
       const results = await mongooseAdapter.find({
-        sort: 'firstName DESC'
+        sort: 'lastName DESC'
       });
       const [result] = results;
       expect(result.firstName).to.equal('hagrid');
