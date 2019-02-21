@@ -72,12 +72,22 @@ const FindQueryBuilder = () => {
 
   const buildQuery = waterlineQuery => {
     const { id, where, or, ...otherFields } = waterlineQuery;
+
     let query = {
       ...(id && { _id: id }),
-      ...(where && { ...where }),
       ...(or && { $or: or }),
       ...otherFields
     };
+
+    if (where) {
+      const { id: whereId, or: whereOr, ...restWhere } = where;
+      query = {
+        ...query,
+        ...(restWhere && { ...restWhere }),
+        ...(whereId && { _id: whereId }),
+        ...(whereOr && { $or: whereOr })
+      };
+    }
 
     query = inModifier(query);
     query = notInModifier(query);

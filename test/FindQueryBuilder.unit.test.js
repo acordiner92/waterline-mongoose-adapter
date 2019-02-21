@@ -54,12 +54,14 @@ describe('FindQueryBuilder', () => {
     it('if nested arrays objects value is an array, it is converted to $nin', () => {
       const findQueryBuilder = FindQueryBuilder();
       const query = findQueryBuilder.buildQuery({
-        firstName: 'harry',
-        or: [
-          {
-            colours: ['blue', 'green', 'yellow']
-          }
-        ]
+        where: {
+          firstName: 'harry',
+          or: [
+            {
+              colours: ['blue', 'green', 'yellow']
+            }
+          ]
+        }
       });
       expect(query).to.eql({
         firstName: 'harry',
