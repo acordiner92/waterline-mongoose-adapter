@@ -33,6 +33,14 @@ describe('FindQueryBuilder', () => {
       expect(query).to.eql({ _id: { $ne: 'xxx' } });
     });
 
+    it('if nested id is present then _id is added', () => {
+      const findQueryBuilder = FindQueryBuilder();
+      const query = findQueryBuilder.buildQuery({
+        or: [{ size: { '<': 5 } }, { id: 7 }]
+      });
+      expect(query).to.eql({ $or: [{ size: { $lt: 5 } }, { _id: 7 }] });
+    });
+
     it('if an array value is present it is converted to $in', () => {
       const findQueryBuilder = FindQueryBuilder();
       const query = findQueryBuilder.buildQuery({

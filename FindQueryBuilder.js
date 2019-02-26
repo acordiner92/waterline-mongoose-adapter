@@ -73,11 +73,28 @@ const FindQueryBuilder = () => {
     }, {});
   };
 
+  const idModifier = query =>
+    Object.entries(query).reduce((prev, [key, value]) => {
+      const updateQuery = {
+        ...prev
+      };
+      if (key === 'id') {
+        updateQuery._id = value;
+      } else if (isOnlyObject(value)) {
+        updateQuery[key] = idModifier(value);
+      } else if (isArrayObjects(value)) {
+        const res = value.map(x => idModifier(x));
+        updateQuery[key] = res;
+      } else {
+        updateQuery[key] = value;
+      }
+      return updateQuery;
+    }, {});
+
   const buildQuery = waterlineQuery => {
-    const { id, where, or, ...otherFields } = waterlineQuery;
+    const { where, or, ...otherFields } = waterlineQuery;
 
     let query = {
-      ...(id && { _id: id }),
       ...(or && { $or: or }),
       ...otherFields
     };
@@ -92,6 +109,7 @@ const FindQueryBuilder = () => {
       };
     }
 
+    query = idModifier(query);
     query = inModifier(query);
     query = notInModifier(query);
     query = criteriaModifiers(query);
