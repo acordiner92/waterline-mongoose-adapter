@@ -44,6 +44,21 @@ const MongooseAdapter = ({ ObjectId, findQueryBuilder }) => ({ Model }) => {
     return results;
   };
 
+  const updateOne = async (queryOrId, model) => {
+    const matched = await findOne(queryOrId);
+    if (!matched) {
+      throw Error('could not find document');
+    }
+    await Model.updateOne(
+      findQueryBuilder.buildQuery(
+        typeof queryOrId === 'string' ? { id: queryOrId } : queryOrId
+      ),
+      model
+    );
+
+    return findOne(matched.id);
+  };
+
   const destroy = queryOrId =>
     Model.deleteMany({
       ...(typeof queryOrId === 'string' && { _id: ObjectId(queryOrId) }),
@@ -65,6 +80,7 @@ const MongooseAdapter = ({ ObjectId, findQueryBuilder }) => ({ Model }) => {
     find,
     create,
     update,
+    updateOne,
     destroy,
     native,
     count

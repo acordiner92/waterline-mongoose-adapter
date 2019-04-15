@@ -243,6 +243,50 @@ describe('MongooseAdapter', () => {
     });
   });
 
+  describe('updateOne', () => {
+    const findQueryBuilder = FindQueryBuilder();
+    it('check a model document is updated successfully', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        findQueryBuilder,
+        ObjectId: mongoose.Types.ObjectId
+      })({ Model: User });
+
+      const result = await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+
+      const updatedResult = await mongooseAdapter.updateOne(result.id, {
+        firstName: 'ron'
+      });
+
+      expect(updatedResult.firstName).to.equal('ron');
+    });
+
+    it('check a model document is updated successfully via query', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        findQueryBuilder,
+        ObjectId: mongoose.Types.ObjectId
+      })({ Model: User });
+
+      await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+
+      const updatedResult = await mongooseAdapter.updateOne(
+        { firstName: 'harry' },
+        {
+          firstName: 'ron'
+        }
+      );
+
+      expect(updatedResult.firstName).to.equal('ron');
+    });
+  });
+
   describe('destroy', () => {
     const findQueryBuilder = FindQueryBuilder();
     it('check model document is deleted', async () => {
