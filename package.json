@@ -24,7 +24,7 @@
   "homepage": "https://github.com/acac99/waterline-mongoose-adapter#readme",
   "devDependencies": {
     "chai": "^4.2.0",
-    "eslint": "^5.13.0",
+    "eslint": "^6.7.1",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-import": "^2.16.0",
