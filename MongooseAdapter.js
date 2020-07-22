@@ -17,12 +17,17 @@ const MongooseAdapter = ({ ObjectId, findQueryBuilder }) => ({ Model }) => {
 
   const find = (query = {}) => {
     const { limit, skip, sort, ...restOfQuery } = query;
-    const mongooseQuery = findQueryBuilder.buildQuery(restOfQuery);
+    const mongooseQuery = Array.isArray(query)
+      ? { _id: query.map(ObjectId) }
+      : findQueryBuilder.buildQuery(restOfQuery);
+
     return Model.find(mongooseQuery)
       .skip(skip)
       .limit(limit)
       .sort({
-        ...(sort ? getSort(sort) : { _id: 1 })
+        ...(sort && typeof sort !== typeof Function
+          ? getSort(sort)
+          : { _id: 1 })
       });
   };
 

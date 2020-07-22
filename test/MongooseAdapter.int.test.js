@@ -11,6 +11,10 @@ describe('MongooseAdapter', () => {
     await Story.deleteMany();
   });
 
+  after(() => {
+    mongoose.connection.close();
+  });
+
   describe('findOne', () => {
     const findQueryBuilder = FindQueryBuilder();
 
@@ -176,6 +180,33 @@ describe('MongooseAdapter', () => {
       });
       const [result] = results;
       expect(result.firstName).to.equal('hagrid');
+    });
+
+    it('check array find works', async () => {
+      const mongooseAdapter = MongooseAdapter({
+        ObjectId: mongoose.Types.ObjectId,
+        findQueryBuilder
+      })({ Model: User });
+
+      const userOne = await User.create({
+        firstName: 'harry',
+        lastName: 'potter',
+        age: 20
+      });
+      const userTwo = await User.create({
+        firstName: 'hagrid',
+        lastName: 'voldi',
+        age: 20
+      });
+
+      const results = await mongooseAdapter.find([
+        userOne._id.toString(),
+        userTwo._id.toString()
+      ]);
+
+      const [savedUserOne, savedUserTwo] = results;
+      expect(savedUserOne.firstName).to.equal('harry');
+      expect(savedUserTwo.firstName).to.equal('hagrid');
     });
   });
 
