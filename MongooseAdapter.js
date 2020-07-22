@@ -1,5 +1,5 @@
 const MongooseAdapter = ({ ObjectId, findQueryBuilder }) => ({ Model }) => {
-  const findOne = async queryOrId => {
+  const findOne = queryOrId => {
     return Model.findOne({
       ...(typeof queryOrId === 'string' && { _id: ObjectId(queryOrId) }),
       ...(typeof queryOrId !== 'string' &&
