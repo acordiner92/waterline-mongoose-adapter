@@ -49,13 +49,13 @@ describe('MongooseAdapter', () => {
       expect(match.id).to.equal(result.id);
     });
 
-    it('Check if no document is found, then undefined is returned', async () => {
+    it('Check if no document is found, then null is returned', async () => {
       const mongooseAdapter = MongooseAdapter({
         ObjectId: mongoose.Types.ObjectId
       })({ Model: User });
 
       const match = await mongooseAdapter.findOne('56aa94de044befe2e79f5b5d');
-      expect(match).to.equal(undefined);
+      expect(match).to.equal(null);
     });
   });
 
