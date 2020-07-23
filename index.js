@@ -1,6 +1,7 @@
 const { Types } = require('mongoose');
 const FindQueryBuilder = require('./FindQueryBuilder');
 const MongooseAdapter = require('./MongooseAdapter');
+const ObjectIdToStringPlugin = require('./ObjectIdToStringPlugin');
 
 const findQueryBuilder = FindQueryBuilder();
 const mongooseAdapter = MongooseAdapter({
@@ -9,5 +10,6 @@ const mongooseAdapter = MongooseAdapter({
 });
 
 module.exports = {
-  WaterlineMongooseAdapter: mongooseAdapter
+  WaterlineMongooseAdapter: mongooseAdapter,
+  ObjectIdToStringPlugin
 };
