@@ -1,6 +1,6 @@
 const objectIdToString = require('./objectIdToString');
 
-module.exports = function mongooseLeanObjectIdToString(schema) {
+module.exports = function LeanObjectIdToString(schema) {
   schema.post('find', objectIdToString);
   schema.post('findOne', objectIdToString);
 };

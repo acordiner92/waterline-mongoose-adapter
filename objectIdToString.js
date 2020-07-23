@@ -24,9 +24,12 @@ const isArrayObjects = obj =>
 
 const convertObject = obj => {
   return Object.entries(obj).reduce((prev, [key, value]) => {
-    if (isObjectId(value)) {
+    if (isObjectId(value) && key !== '_id') {
       // eslint-disable-next-line no-param-reassign
       prev[key] = value.toString();
+    } else if (isObjectId(value) && key === '_id') {
+      // eslint-disable-next-line no-param-reassign
+      prev.id = value.toString();
     } else if (isOnlyObject(value)) {
       // eslint-disable-next-line no-param-reassign
       prev[key] = convertObject(value);
@@ -39,9 +42,9 @@ const convertObject = obj => {
   }, obj);
 };
 
-const objectIdToString = value => {
-  if (!value) {
-    return;
+const objectIdToString = function objectIdToString(value) {
+  if (!this._mongooseOptions.lean || !value) {
+    return value;
   }
   if (isArrayObjects(value)) {
     return value.map(x => convertObject(x));

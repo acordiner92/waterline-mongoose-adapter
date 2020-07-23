@@ -2,6 +2,10 @@ const { expect } = require('chai');
 const { Types } = require('mongoose');
 const objectIdToString = require('../objectIdToString');
 
+global._mongooseOptions = {
+  lean: true
+};
+
 describe.only('objectIdToString', () => {
   it('if the value is not set, then undefined is returned', () => {
     expect(objectIdToString()).to.equal(undefined);
@@ -14,6 +18,17 @@ describe.only('objectIdToString', () => {
     const result = objectIdToString(value);
     expect(result).to.eql({
       objectId: '5f03f1e320d23f43ff7c0a3d'
+    });
+  });
+
+  it('check object with _id remains ObjectId and created id field', () => {
+    const value = {
+      _id: Types.ObjectId('5f03f1e320d23f43ff7c0a3d')
+    };
+    const result = objectIdToString(value);
+    expect(result).to.eql({
+      _id: Types.ObjectId('5f03f1e320d23f43ff7c0a3d'),
+      id: '5f03f1e320d23f43ff7c0a3d'
     });
   });
 
