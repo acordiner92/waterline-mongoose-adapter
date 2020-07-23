@@ -4,15 +4,15 @@ const mongoose = require('../mongoose');
 const MongooseAdapter = require('../MongooseAdapter');
 const FindQueryBuilder = require('../FindQueryBuilder');
 
+after(() => {
+  mongoose.connection.close();
+});
+
 describe('MongooseAdapter', () => {
   beforeEach(async () => {
     await User.deleteMany();
     await Book.deleteMany();
     await Story.deleteMany();
-  });
-
-  after(() => {
-    mongoose.connection.close();
   });
 
   describe('findOne', () => {
