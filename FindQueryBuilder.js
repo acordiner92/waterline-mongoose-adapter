@@ -1,4 +1,19 @@
 const FindQueryBuilder = () => {
+  const isObjectId = value => {
+    if (!value) {
+      return false;
+    }
+    const proto = Object.getPrototypeOf(value);
+    if (
+      proto == null ||
+      proto.constructor == null ||
+      proto.constructor.name !== 'ObjectID'
+    ) {
+      return false;
+    }
+    return value._bsontype === 'ObjectID';
+  };
+
   const isOnlyObject = obj =>
     typeof obj === 'object' &&
     !(obj instanceof Date) &&
@@ -15,10 +30,10 @@ const FindQueryBuilder = () => {
       };
       if (key !== '!' && Array.isArray(value) && key !== '$or') {
         updateQuery[key] = { $in: value };
-      } else if (isOnlyObject(value)) {
+      } else if (isOnlyObject(value) && !isObjectId(value)) {
         updateQuery[key] = inModifier(value);
       } else if (isArrayObjects(value)) {
-        const res = value.map(x => inModifier(x));
+        const res = value.map(x => (isObjectId(x) ? x : inModifier(x)));
         updateQuery[key] = res;
       } else {
         updateQuery[key] = value;
@@ -34,10 +49,10 @@ const FindQueryBuilder = () => {
       };
       if (key === '!' && Array.isArray(value)) {
         updateQuery = { $nin: value };
-      } else if (isOnlyObject(value)) {
+      } else if (isOnlyObject(value) && !isObjectId(value)) {
         updateQuery[key] = notInModifier(value);
       } else if (isArrayObjects(value)) {
-        const res = value.map(x => notInModifier(x));
+        const res = value.map(x => (isObjectId(x) ? x : notInModifier(x)));
         updateQuery[key] = res;
       } else {
         updateQuery[key] = value;
@@ -61,10 +76,10 @@ const FindQueryBuilder = () => {
       };
       if (criterias[key]) {
         updateQuery[criterias[key]] = value;
-      } else if (isOnlyObject(value)) {
+      } else if (isOnlyObject(value) && !isObjectId(value)) {
         updateQuery[key] = criteriaModifiers(value);
       } else if (isArrayObjects(value)) {
-        const res = value.map(x => criteriaModifiers(x));
+        const res = value.map(x => (isObjectId(x) ? x : criteriaModifiers(x)));
         updateQuery[key] = res;
       } else {
         updateQuery[key] = value;
@@ -80,10 +95,10 @@ const FindQueryBuilder = () => {
       };
       if (key === 'id') {
         updateQuery._id = value;
-      } else if (isOnlyObject(value)) {
+      } else if (isOnlyObject(value) && !isObjectId(value)) {
         updateQuery[key] = idModifier(value);
       } else if (isArrayObjects(value)) {
-        const res = value.map(x => idModifier(x));
+        const res = value.map(x => (isObjectId(x) ? x : idModifier(x)));
         updateQuery[key] = res;
       } else {
         updateQuery[key] = value;

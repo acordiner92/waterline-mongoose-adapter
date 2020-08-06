@@ -1,5 +1,8 @@
 const { expect } = require('chai');
 const FindQueryBuilder = require('../FindQueryBuilder');
+const mongoose = require('../mongoose');
+
+const { ObjectId } = mongoose.Types;
 
 describe('FindQueryBuilder', () => {
   describe('buildQuery', () => {
@@ -48,6 +51,26 @@ describe('FindQueryBuilder', () => {
       });
       expect(query).to.eql({
         colours: { $in: ['blue', 'green', 'yellow'] }
+      });
+    });
+
+    it('if a value is a object id then it remains unmodified', () => {
+      const findQueryBuilder = FindQueryBuilder();
+      const query = findQueryBuilder.buildQuery({
+        userId: ObjectId('5a6eb8988e7f81b7b07524c2')
+      });
+      expect(query).to.eql({
+        userId: ObjectId('5a6eb8988e7f81b7b07524c2')
+      });
+    });
+
+    it('if an array value is present and it has object ids they remain unmodified', () => {
+      const findQueryBuilder = FindQueryBuilder();
+      const query = findQueryBuilder.buildQuery({
+        userIds: [ObjectId('5a6eb8988e7f81b7b07524c2')]
+      });
+      expect(query).to.eql({
+        userIds: { $in: [ObjectId('5a6eb8988e7f81b7b07524c2')] }
       });
     });
 

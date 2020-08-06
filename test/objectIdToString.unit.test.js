@@ -6,7 +6,7 @@ global._mongooseOptions = {
   lean: true
 };
 
-describe.only('objectIdToString', () => {
+describe('objectIdToString', () => {
   it('if the value is not set, then undefined is returned', () => {
     expect(objectIdToString()).to.equal(undefined);
   });
